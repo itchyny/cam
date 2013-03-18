@@ -1,0 +1,38 @@
+# cam - a unix command for viewing images
+## Installation
+
+    curl -O https://raw.github.com/itchyny/cam/master/cam-0.0.0.tar.gz
+    # wget --no-check-certificate https://raw.github.com/itchyny/cam/master/cam-0.0.0.tar.gz
+    tar xvf ./cam-0.0.0.tar.gz
+    cd ./cam-0.0.0
+    ./configure
+    make
+    sudo make install
+
+## Example
+
+    cam test.jpg
+    cam *
+    cam -h 50 test.jpg
+    cam -C *
+    cam -R *
+
+## Manual
+
+    man cam
+
+## Author
+itchyny <https://github.com/itchyny>
+
+## Repository
+https://github.com/itchyny/cam
+
+## License
+MIT License
+
+## Infomation
+File: README
+Author: itchyny
+Last Change: 2013/03/18 20:15:03.
+
+
