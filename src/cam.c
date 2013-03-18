@@ -71,54 +71,60 @@ typedef unsigned char color;
 #define getcolor24(red, green, blue)\
   16 + 36 * (red / 43) + 6 * (green / 43) + (blue / 43)
 
-#define ESC "\x1b["
+#define ESC "\x1b"
+#define CSI "\x1b["
 
-#define ESC_COLOR_FUNC(name,format,num)\
+#define CSI_COLOR_FUNC(name,format,num)\
   static inline void name(color red, color green, color blue) {\
-    printf(ESC format, num); };
-ESC_COLOR_FUNC(setfgcolor3, "%dm", 30 + getcolor3(red, green, blue))
-ESC_COLOR_FUNC(setbgcolor3, "%dm", 40 + getcolor3(red, green, blue))
-ESC_COLOR_FUNC(setfgcolor24, "38;5;%dm", getcolor24(red, green, blue))
-ESC_COLOR_FUNC(setbgcolor24, "48;5;%dm", getcolor24(red, green, blue))
-ESC_COLOR_FUNC(coloredspace3, "%dm ", 40 + getcolor3(red, green, blue))
-ESC_COLOR_FUNC(coloredspace3_2, "%dm  ", 40 + getcolor3(red, green, blue))
-ESC_COLOR_FUNC(coloredspace24, "48;5;%dm ", getcolor24(red, green, blue))
-ESC_COLOR_FUNC(coloredspace24_2, "48;5;%dm  ", getcolor24(red, green, blue))
+    printf(CSI format, num); };
+CSI_COLOR_FUNC(setfgcolor3, "%dm", 30 + getcolor3(red, green, blue))
+CSI_COLOR_FUNC(setbgcolor3, "%dm", 40 + getcolor3(red, green, blue))
+CSI_COLOR_FUNC(setfgcolor24, "38;5;%dm", getcolor24(red, green, blue))
+CSI_COLOR_FUNC(setbgcolor24, "48;5;%dm", getcolor24(red, green, blue))
+CSI_COLOR_FUNC(coloredspace3, "%dm ", 40 + getcolor3(red, green, blue))
+CSI_COLOR_FUNC(coloredspace3_2, "%dm  ", 40 + getcolor3(red, green, blue))
+CSI_COLOR_FUNC(coloredspace24, "48;5;%dm ", getcolor24(red, green, blue))
+CSI_COLOR_FUNC(coloredspace24_2, "48;5;%dm  ", getcolor24(red, green, blue))
 
 #define ESC_FUNC(name,format)\
   static inline void name(void) {\
     printf(ESC format); };
-ESC_FUNC(erasedown, "J")
-ESC_FUNC(eraseup, "1J")
-ESC_FUNC(erasescreen, "2J")
-ESC_FUNC(erasetoendofline, "K")
-ESC_FUNC(erasetostartofline, "1K")
-ESC_FUNC(eraseline, "2K")
-ESC_FUNC(cursorhide, "?25l")
-ESC_FUNC(cursorshow, "?25h")
-ESC_FUNC(cursorsave, "s")
-ESC_FUNC(cursorunsave, "u")
-ESC_FUNC(cursorhome, "H")
-ESC_FUNC(scrollscreenall, "r")
-ESC_FUNC(setdefaultcolor, "0m")
+
+#define CSI_FUNC(name,format)\
+  static inline void name(void) {\
+    printf(CSI format); };
+
+CSI_FUNC(erasedown, "J")
+CSI_FUNC(eraseup, "1J")
+CSI_FUNC(erasescreen, "2J")
+CSI_FUNC(erasetoendofline, "K")
+CSI_FUNC(erasetostartofline, "1K")
+CSI_FUNC(eraseline, "2K")
+CSI_FUNC(cursorhide, "?25l")
+CSI_FUNC(cursorshow, "?25h")
+ESC_FUNC(cursorsave, "7")
+ESC_FUNC(cursorunsave, "8")
+CSI_FUNC(cursorhome, "H")
+CSI_FUNC(scrollscreenall, "r")
+CSI_FUNC(setdefaultcolor, "0m")
 static inline void newline(void) { printf("\n"); };
 static inline void erasescreen_cursorhome(void) {
   erasescreen();
   cursorhome();
 }
 
-#define ESC_FUNC1(name,format)\
+#define CSI_FUNC1(name,format)\
   static inline void name(int arg) {\
-    printf(ESC format, arg); };
-ESC_FUNC1(cursorup, "%dA")
-ESC_FUNC1(cursordown, "%dB")
-ESC_FUNC1(cursorforward, "%dC")
-ESC_FUNC1(cursorback, "%dD")
-ESC_FUNC1(cursornextline, "%dE")
-ESC_FUNC1(cursorpreviousline, "%dF")
-ESC_FUNC1(cursorhorizontalabsolute, "%dG")
-ESC_FUNC1(scrollup, "%dS")
-ESC_FUNC1(scrolldown, "%dT")
+    printf(CSI format, arg); };
+CSI_FUNC1(cursorup, "%dA")
+CSI_FUNC1(cursordown, "%dB")
+CSI_FUNC1(cursorforward, "%dC")
+CSI_FUNC1(cursorback, "%dD")
+CSI_FUNC1(cursornextline, "%dE")
+CSI_FUNC1(cursorpreviousline, "%dF")
+CSI_FUNC1(cursorhorizontalabsolute, "%dG")
+CSI_FUNC1(scrollup, "%dS")
+CSI_FUNC1(scrolldown, "%dT")
 static inline void cursorforward_erasetostartofline(int arg) {
   cursorforward(arg);
   erasetostartofline();
@@ -128,11 +134,11 @@ static inline void cursordown_cursorhorizontalabsolute() {
   cursorhorizontalabsolute(1);
 }
 
-#define ESC_FUNC2(name,format)\
+#define CSI_FUNC2(name,format)\
   static inline void name(int arg1, int arg2) {\
-    printf(ESC format, arg1, arg2); };
-ESC_FUNC2(cursormove, "%d;%dH")
-ESC_FUNC2(scrollscreen, "%d;%dr")
+    printf(CSI format, arg1, arg2); };
+CSI_FUNC2(cursormove, "%d;%dH")
+CSI_FUNC2(scrollscreen, "%d;%dr")
 
 #define NEWLINE1 "\n"
 #define NEWLINE2 NEWLINE1 NEWLINE1
