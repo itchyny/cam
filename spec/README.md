@@ -1,6 +1,6 @@
 <!-- File: spec/README.md -->
 <!-- Author: itchyny -->
-<!-- Last Change: 2013/02/18 17:14:56. -->
+<!-- Last Change: 2013/03/18 20:28:30. -->
 
 # cam
 ## Requirement
@@ -442,6 +442,12 @@ However, the `stdin mode` is not portable due to the mulptiple call of `ungetc`.
 I'm very sorry for this point.
 
 ## Installation
-./configure && make && make install
 
+    curl -O https://raw.github.com/itchyny/cam/master/cam-0.0.0.tar.gz
+    # wget --no-check-certificate https://raw.github.com/itchyny/cam/master/cam-0.0.0.tar.gz
+    tar xvf ./cam-0.0.0.tar.gz
+    cd ./cam-0.0.0
+    ./configure
+    make
+    sudo make install
 
