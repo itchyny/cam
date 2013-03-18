@@ -1,0 +1,8 @@
+* Release cam 0.0.0 (2012/03/31)
+
+** cam is a tool for viewing image files inside the terminals. This software
+supports reading bmp, png, jpg or gif files. The possible types depends on
+the library stb_image.c. This software also supports for reading from the
+standard input, or a FIFO. There are many options to spcifying the position
+and the size.
+

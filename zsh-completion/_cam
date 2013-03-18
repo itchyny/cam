@@ -1,0 +1,33 @@
+#compdef cam
+
+# File: _cam
+# Author: itchyny
+# Last Change: 2013/03/18 19:21:36.
+
+_arguments -S -s -A "-*" -S \
+  '-i[file information]' \
+  '-q[turn off error information]' \
+  '-d[debug information]' \
+  '-s[sleep duration (second)]' \
+  '-r[repeat count]' \
+  '-c[use 8 colors]' \
+  '(- *)-v[print version]' \
+  \
+  '-L[left position]' \
+  '-R[right position]' \
+  '-C[center position]' \
+  '(-B)-T[top position]' \
+  '(-T)-B[bottom position]' \
+  '-E[erase screen before first file]' \
+  '-![position help]' \
+  \
+  '(-W)-w[output width (%)]' \
+  '(-w)-W[output width (character)]' \
+  '(-H)-h[output height (%)]' \
+  '(-h)-H[output height (character)]' \
+  \
+  '*:files:_files' \
+  && return 0
+
+return 1
+

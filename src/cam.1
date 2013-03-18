@@ -1,0 +1,129 @@
+.\" File: cam.1
+.\" Author: itchyny
+.\" Last Change: 2013/03/18 19:20:25.
+
+.\" Copyright (c)
+.ds ye 2013
+.ds mo March
+.ds da 18
+.\" author
+.ds au itchyny
+.\" command name, bold name, version, purpose
+.ds na cam
+.ds un CAM
+.ds bn \fB\*(na\fR
+.ds ve 0.0.0
+.ds pu view image files
+.ds st \fBstbi-1.33\fR
+
+.TH \*(un 1  "\*(mo \*(da, \*(ye" "version \*(ve" "USER COMMANDS"
+
+.SH NAME
+\*(bn \-\- \*(pu
+
+.SH SYNOPSIS
+\*(bn
+[ \fB\-iqdc\fR ]
+[ \fB\-LRCTB!\fR ]
+[ \fB\-v\fR ]
+[ \fB\-s\fR duration(second) ]
+[ \fB\-r\fR repeat_count ]
+file ...
+
+.SH DESCRIPTION
+The \*(bn utility outputs an image file to \fBstdout\fR, using ANSI escape codes.
+
+.SH OPTIONS
+The options are as follows:
+.TP
+\fB\-i\fR
+Turn on displaying the file information. Off in default. This option is nothing to do with the error information(\fB\-q\fR).
+.TP
+\fB\-q\fR
+Suppress the error information. In default, the error information is sent to \fBstderr\fR.
+.TP
+\fB\-d\fR
+Turn on displaying the debug information at the top of the screen. Off in default.
+.TP
+\fB\-s\fR duration(second) >=0
+If \fB\-s\fR the duration is set, \*(bn halts for specified time after viewing each file. A negative number is invalid.
+.TP
+\fB\-r\fR repeat_count >=0
+Repeat viewing all the images for a specified times. Default value is 1. If this value is set to 0 or omitted, \*(bn repeats forever. A negative number is invalid.
+.TP
+\fB\-c\fR
+Use 8 colors. In default, \*(bn uses 256 colors.
+.TP
+\fB\-LRCTB\fR
+These are options for positioning. Each reads \fBL\fReft, \fBR\fRight, \fBC\fRenter, \fBT\fRop, \fBB\fRottom. You can use like \fB\-RT\fR for right top edge, or \fB\-LC\fR for center left. If both \fB\-L\fR and \fB\-R\fR are specified, it means middle of the terminal. \fB\-T\fR and \fB\-B\fR flags overwrites each setting: \fB\-TB\fR is \fB\-B\fR, vice versa. For more description, try \*(bn \fB\-!\fR.
+.TP
+\fB\-v\fR
+Output the version and exit instantly.
+.TP
+\fB\-!\fR
+Output position help and exit. This option can be used alone, and with positioning options.
+
+.SH EXIT STATUS
+The \*(bn utility exits 0 on success, and >0 if an error occurs.
+
+.SH EXAMPLES
+The command:
+.PP
+	
+\*(bn file1
+.PP
+will view the image of \fBfile1\fR to \fBstdout\fR, if it is an image file.
+
+.PP
+	
+\*(bn file1 file2 > file3
+.PP
+will sequentially output the ANSI escape codes of the images of \fBfile1\fR and \fBfile2\fR to \fBfile3\fR , truncating \fBfile3\fR if it already exists.
+.PP
+	
+\fBcat\fR file3
+.PP
+And you can view the image contents of \fBfile3\fR by \fBcat\fR command.
+
+.SH READING FROM STANDARD INPUT EXAMPLES
+If you type:
+.PP
+	
+\fBecho\fR \-n "BM\\0\\0\\0\\0\\0\\0\\0\\0\\x1a\\0\\0\\0\\xc\\0\\0\\0\\x1\\0\\x1\\0\\x1\\0\\x18\\0\\x0\\xff\\x0"
+> test.bmp
+.PP
+you'll find test.bmp is a green 1 dot bitmap file. Of course, you can use \*(bn to check it:
+.PP
+	
+\*(bn test.bmp
+.PP
+but \*(bn also supports reading from \fBstdin\fR, so
+.PP
+	
+\fBcat\fR test.bmp | \*(bn
+.PP
+or directly,
+.PP
+	
+\fBecho\fR \-n "BM\\0\\0\\0\\0\\0\\0\\0\\0\\x1a\\0\\0\\0\\xc\\0\\0\\0\\x1\\0\\x1\\0\\x1\\0\\x18\\0\\x0\\xff\\x0" | \*(bn
+.PP
+works well. (You overwrite the last three bits to enjoy the color changing.)
+.PP
+If a file is given as an argument, \*(bn discards \fBstdin\fR. When \*(bn uses \fBstdin\fR as the image source, repeat mode (\fB\-r\fR) is disabled. This feature is useful in using \fBcurl\fR command for an image, or testing an image processing program. For example, the command:
+.PP
+	\fBcurl\fR \-s 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=apple' |
+
+		\fBpython\fR \-c "import sys,os,json; d = json.loads(sys.stdin.read());
+
+			map(lambda r: os.system('\fBcurl\fR \-s ' + r['url'] + ' | \*(bn'), d['responseData']['results'])"
+.PP
+searches images related to 'apple' with \fBcurl\fR from \fBGoogle Image Search\fR and parses the result using \fBPython\fR, and again uses \fBcurl\fR to fetch each image, passing the response to \*(bn, results in outputting the each image to \fBstdout\fR.
+
+
+.SH LICENSE
+Copyright 2013, itchyny. All rights reserved.
+This software is distributed under the MIT license.
+
+.SH AUTHOR
+This software, this manual and related files are maintained by \*(au. This software uses library \*(st available at \fB<http://nothings.org/stb_image.c>\fR. Report bugs or new features at \fB<https://github.com/itchyny/cam>\fR.
+
