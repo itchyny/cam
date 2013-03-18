@@ -1,8 +1,12 @@
 <!-- File: spec/README.md -->
 <!-- Author: itchyny -->
-<!-- Last Change: 2013/03/18 20:28:30. -->
+<!-- Last Change: 2013/03/18 20:48:53. -->
 
 # cam
+## warning
+This specification is under development.
+The actual behavior may differ from this spec.
+
 ## Requirement
 
     `I want to view my images inside the terminal.'
