@@ -1,6 +1,6 @@
 .\" File: cam.1
 .\" Author: itchyny
-.\" Last Change: 2013/03/18 19:20:25.
+.\" Last Change: 2013/03/19 19:57:09.
 
 .\" Copyright (c)
 .ds ye 2013
@@ -25,6 +25,7 @@
 \*(bn
 [ \fB\-iqdc\fR ]
 [ \fB\-LRCTB!\fR ]
+[ \fB\-P\fR ]
 [ \fB\-v\fR ]
 [ \fB\-s\fR duration(second) ]
 [ \fB\-r\fR repeat_count ]
@@ -56,6 +57,9 @@ Use 8 colors. In default, \*(bn uses 256 colors.
 .TP
 \fB\-LRCTB\fR
 These are options for positioning. Each reads \fBL\fReft, \fBR\fRight, \fBC\fRenter, \fBT\fRop, \fBB\fRottom. You can use like \fB\-RT\fR for right top edge, or \fB\-LC\fR for center left. If both \fB\-L\fR and \fB\-R\fR are specified, it means middle of the terminal. \fB\-T\fR and \fB\-B\fR flags overwrites each setting: \fB\-TB\fR is \fB\-B\fR, vice versa. For more description, try \*(bn \fB\-!\fR.
+.TP
+\fB\-P\fR
+Set position for padding.
 .TP
 \fB\-v\fR
 Output the version and exit instantly.
