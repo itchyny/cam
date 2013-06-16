@@ -1,7 +1,7 @@
 /*
  * file: cam.c
  * author: itchyny
- * Last Change: 2013/03/18 19:19:21.
+ * Last Change: 2013/06/16 10:01:50.
  */
 
 #include <stdio.h>
@@ -35,9 +35,12 @@
 #define STDIN_PATH "/dev/stdin"
 #define TTY_PATH "/dev/tty"
 
+#ifdef __STDC__
+#  define inline
+#endif
+
 extern int optind, opterr; /* unistd.h */
 extern char *optarg; /* unistd.h */
-extern int errno; /* errno.h */
 
 static int terminalwidth, terminalheight, outputwidth, outputheight;
 static int
@@ -75,12 +78,13 @@ typedef unsigned char color;
 #define CSI "\x1b["
 
 #define CSI_COLOR_FUNC(name,format,num)\
+  static inline void name(color, color, color);\
   static inline void name(color red, color green, color blue) {\
-    printf(CSI format, num); };
-CSI_COLOR_FUNC(setfgcolor3, "%dm", 30 + getcolor3(red, green, blue))
-CSI_COLOR_FUNC(setbgcolor3, "%dm", 40 + getcolor3(red, green, blue))
-CSI_COLOR_FUNC(setfgcolor24, "38;5;%dm", getcolor24(red, green, blue))
-CSI_COLOR_FUNC(setbgcolor24, "48;5;%dm", getcolor24(red, green, blue))
+    printf(CSI format, num); }
+/* CSI_COLOR_FUNC(setfgcolor3, "%dm", 30 + getcolor3(red, green, blue)) */
+/* CSI_COLOR_FUNC(setbgcolor3, "%dm", 40 + getcolor3(red, green, blue)) */
+/* CSI_COLOR_FUNC(setfgcolor24, "38;5;%dm", getcolor24(red, green, blue)) */
+/* CSI_COLOR_FUNC(setbgcolor24, "48;5;%dm", getcolor24(red, green, blue)) */
 CSI_COLOR_FUNC(coloredspace3, "%dm ", 40 + getcolor3(red, green, blue))
 CSI_COLOR_FUNC(coloredspace3_2, "%dm  ", 40 + getcolor3(red, green, blue))
 CSI_COLOR_FUNC(coloredspace24, "48;5;%dm ", getcolor24(red, green, blue))
@@ -88,73 +92,49 @@ CSI_COLOR_FUNC(coloredspace24_2, "48;5;%dm  ", getcolor24(red, green, blue))
 
 #define ESC_FUNC(name,format)\
   static inline void name(void) {\
-    printf(ESC format); };
+    printf(ESC format); }
 
 #define CSI_FUNC(name,format)\
   static inline void name(void) {\
-    printf(CSI format); };
+    printf(CSI format); }
 
-CSI_FUNC(erasedown, "J")
-CSI_FUNC(eraseup, "1J")
+/* CSI_FUNC(erasedown, "J") */
+/* CSI_FUNC(eraseup, "1J") */
 CSI_FUNC(erasescreen, "2J")
-CSI_FUNC(erasetoendofline, "K")
-CSI_FUNC(erasetostartofline, "1K")
-CSI_FUNC(eraseline, "2K")
+/* CSI_FUNC(erasetoendofline, "K") */
+/* CSI_FUNC(erasetostartofline, "1K") */
+/* CSI_FUNC(eraseline, "2K") */
 CSI_FUNC(cursorhide, "?25l")
 CSI_FUNC(cursorshow, "?25h")
 ESC_FUNC(cursorsave, "7")
 ESC_FUNC(cursorunsave, "8")
-CSI_FUNC(cursorhome, "H")
-CSI_FUNC(scrollscreenall, "r")
+/* CSI_FUNC(cursorhome, "H") */
+/* CSI_FUNC(scrollscreenall, "r") */
 CSI_FUNC(setdefaultcolor, "0m")
-static inline void newline(void) { printf("\n"); };
-static inline void erasescreen_cursorhome(void) {
-  erasescreen();
-  cursorhome();
-}
+static inline void newline(void) { printf("\n"); }
 
 #define CSI_FUNC1(name,format)\
   static inline void name(int arg) {\
-    printf(CSI format, arg); };
-CSI_FUNC1(cursorup, "%dA")
+    printf(CSI format, arg); }
+/* CSI_FUNC1(cursorup, "%dA") */
 CSI_FUNC1(cursordown, "%dB")
 CSI_FUNC1(cursorforward, "%dC")
-CSI_FUNC1(cursorback, "%dD")
-CSI_FUNC1(cursornextline, "%dE")
-CSI_FUNC1(cursorpreviousline, "%dF")
+/* CSI_FUNC1(cursorback, "%dD") */
+/* CSI_FUNC1(cursornextline, "%dE") */
+/* CSI_FUNC1(cursorpreviousline, "%dF") */
 CSI_FUNC1(cursorhorizontalabsolute, "%dG")
-CSI_FUNC1(scrollup, "%dS")
-CSI_FUNC1(scrolldown, "%dT")
-static inline void cursorforward_erasetostartofline(int arg) {
-  cursorforward(arg);
-  erasetostartofline();
-}
-static inline void cursordown_cursorhorizontalabsolute() {
+/* CSI_FUNC1(scrollup, "%dS") */
+/* CSI_FUNC1(scrolldown, "%dT") */
+static inline void cursordown_cursorhorizontalabsolute(void) {
   cursordown(1);
   cursorhorizontalabsolute(1);
 }
 
 #define CSI_FUNC2(name,format)\
   static inline void name(int arg1, int arg2) {\
-    printf(CSI format, arg1, arg2); };
+    printf(CSI format, arg1, arg2); }
 CSI_FUNC2(cursormove, "%d;%dH")
-CSI_FUNC2(scrollscreen, "%d;%dr")
-
-#define NEWLINE1 "\n"
-#define NEWLINE2 NEWLINE1 NEWLINE1
-#define NEWLINE4 NEWLINE2 NEWLINE2
-#define NEWLINE8 NEWLINE4 NEWLINE4
-#define NEWLINE16 NEWLINE8 NEWLINE8
-#define NEWLINE32 NEWLINE16 NEWLINE16
-static inline void replicatenewline(int count)
-{
-  while (count >= 32) { printf(NEWLINE32); count -= 32; }
-  if (count & 16) printf(NEWLINE16);
-  if (count & 8) printf(NEWLINE8);
-  if (count & 4) printf(NEWLINE4);
-  if (count & 2) printf(NEWLINE2);
-  if (count & 1) printf(NEWLINE1);
-}
+/* CSI_FUNC2(scrollscreen, "%d;%dr") */
 
 #define SPACE1 " "
 #define SPACE2 SPACE1 SPACE1
@@ -187,6 +167,7 @@ static void saftyexit(int status)
 
 static void interuppthandler(int signal)
 {
+  (void)signal;
   saftyexit(EXIT_FAILURE);
 }
 
@@ -279,12 +260,15 @@ static void position(void)
     else if (Cflag) printf(ZN BB HU BB ZN);
     else            printf(ZN HU HU HU ZN);
   } else {
-    printf("Position description" NL NL
-      "--, (L)" S5   "   LR" S5 S2         "R"            NL HP HH HH HH HP NL
-      "TL, (TLC)" S5 " T, (TC, TLR, TCLR)" S3 "TR, (TRC)" NL HP HH BS BS HP NL
-      "CL" S5 S2  "C, (CLR)" S5            "  CR"         NL HP BS HH BS HP NL
-      "BL, (BLC)" S5 " B, (BC, BLR, BCLR)" S3 "BR, (BRC)" NL HP BS BS HH HP NL
-    );
+    printf("Position description" NL NL);
+    printf("--, (L)" S5   "   LR" S5 S2         "R"            );
+    printf(NL HP HH); printf(HH HH HP NL);
+    printf("TL, (TLC)" S5 " T, (TC, TLR, TCLR)" S3 "TR, (TRC)" );
+    printf(NL HP HH); printf(BS BS HP NL);
+    printf("CL" S5 S2  "C, (CLR)" S5            "  CR"         );
+    printf(NL HP BS); printf(HH BS HP NL);
+    printf("BL, (BLC)" S5 " B, (BC, BLR, BCLR)" S3 "BR, (BRC)" );
+    printf(NL HP BS); printf(BS HH HP NL);
   }
   fflush(stdout);
   exit(EXIT_SUCCESS);
@@ -334,6 +318,7 @@ static inline void terminalsize(void)
   if (outputheight < 1) outputheight = 1;
 }
 
+void inline getaverage(color*, int, int, int, int, int*, int*, int*);
 void inline getaverage(color *p, int istep, int jstep, int count,
     int offsetjstep, int *red, int *green, int *blue)
 /* This function doesn't check if the pointer is valid to reduce overhead.
@@ -367,6 +352,7 @@ static void outputcolor_1(color *image, int height, int width, int offset,
     int i, int j, int istep, int jstep, int comp)
 {
   int red, green, blue, offsetjstep, count;
+  (void)height; (void)i; (void) j;
   count = jstep * istep;
   offsetjstep = (width - jstep) * comp;
   getaverage(image + offset, istep, jstep, count, offsetjstep,
@@ -378,6 +364,8 @@ static void outputcolor_1(color *image, int height, int width, int offset,
 static void outputcolor_2(color *image, int height, int width, int offset,
     int i, int j, int istep, int jstep, int comp)
 {
+  (void)height; (void)width; (void)i; (void) j;
+  (void)istep; (void)jstep; (void)comp;
   coloredspace24_2(image[offset], image[offset + 1], image[offset + 2]);
 }
 
@@ -385,6 +373,7 @@ static void outputcolor_3(color *image, int height, int width, int offset,
     int i, int j, int istep, int jstep, int comp)
 {
   int red, green, blue, offsetjstep, count;
+  (void)height; (void)i; (void) j;
   count = jstep * istep;
   offsetjstep = (width - jstep) * comp;
   getaverage(image + offset, istep, jstep, count, offsetjstep,
@@ -395,6 +384,8 @@ static void outputcolor_3(color *image, int height, int width, int offset,
 static void outputcolor_4(color *image, int height, int width, int offset,
     int i, int j, int istep, int jstep, int comp)
 {
+  (void)height; (void)width; (void)i; (void) j;
+  (void)istep; (void)jstep; (void)comp;
   coloredspace3_2(image[offset], image[offset + 1], image[offset + 2]);
 }
 
@@ -467,7 +458,7 @@ static int checkstdin(void)
 static int deal(FILE *fp, char *filename, int pipemode)
 {
   color *image;
-  void (*outputcolor)();
+  void (*outputcolor)(color*, int, int, int, int, int, int, int, int);
   int width, height, comp, i, j, istep, jstep, ch, scale, scalew, scaleh,
       offset, imagewidth, imageheight,
       margintopbottom, marginleftright, marginleft, margintop,
@@ -717,7 +708,7 @@ static int deal(FILE *fp, char *filename, int pipemode)
     printf(PACKAGE);
     if (iflag) printf(" -i");
     if (qflag) printf(" -q");
-    if (sflag) printf(" -s %lf", sval);
+    if (sflag) printf(" -s %f", sval);
     if (rflag) printf(" -r %ld", rval);
     if (Lflag) printf(" -L");
     if (Rflag) printf(" -R");
